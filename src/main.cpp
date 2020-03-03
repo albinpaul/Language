@@ -1,5 +1,6 @@
 #include <iostream>
-int main() {
-    std::cout << "HelloWorld" << std::endl;
+#include "torro.hpp"
+int main(int argc, char * argv[]) {
+    std::cout << "argc is " << argc << std::endl;
     return 0;
 }
