@@ -3,10 +3,10 @@
 #include <fstream>
 int interpreter::runPrompt() {
     std::cout << "Running Torro Interpretor" << std::endl;
-    std::cout << ">->->";
     int error = 0;
-    for(std::string line;std::getline(std::cin,line);) {
+    for(std::string line;;) {
         std::cout << ">->->" ;
+        std::getline(std::cin,line);
         error = run(line);
         if (error)
             break;
@@ -17,13 +17,18 @@ int interpreter::runPrompt() {
 int interpreter::runFile(const char * fileName) {
     std::ifstream inputStream(fileName);
     int error = 0;
+    std::string fileSource;
     if (inputStream.good()) {
-
+        inputStream.seekg(0,std::ios::end);
+        fileSource.reserve(inputStream.tellg());
+        inputStream.seekg(0,std::ios::beg);
+        fileSource.assign(std::istreambuf_iterator<char>(inputStream),std::istreambuf_iterator<char>());
+        run(fileSource);
     }else {
-        std::cerr << "Could not open file" << fileName << std:: endl;
+        std::cerr << "Could not open file" << fileName << std::endl;
     }
     return error;
 }
-int interpreter::run(const std::string &fileSource) {
+int interpreter::run(std::string &fileSource) {
     return 0;
 }
