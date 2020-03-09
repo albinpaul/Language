@@ -1,6 +1,7 @@
 #include <string>
 #include <ostream>
 #include <vector>
+#include <unordered_map>
 enum TokenType {
     // Single-character tokens.                      
   LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -38,6 +39,24 @@ class Scanner {
     unsigned int start = 0;
     unsigned int current = 0;
     unsigned int line = 1;
+    std::unordered_map <std::string,TokenType> keywords {
+      {"and",    AND},                       
+      {"class",  CLASS},                     
+      {"else",   ELSE},                      
+      {"false",  FALSE},                     
+      {"for",    FOR},                       
+      {"fun",    FUN},                       
+      {"if",     IF},                        
+      {"nil",    NIL},                       
+      {"or",     OR},                        
+      {"print",  PRINT},                     
+      {"return", RETURN},                    
+      {"super",  SUPER},                     
+      {"this",   THIS},                      
+      {"true",   TRUE},                      
+      {"var",    VAR},                       
+      {"while",  WHILE} 
+    };
   public:
     Scanner(std::string source): source(source) {};
     std::vector <Token> scanTokens() ;
@@ -49,4 +68,10 @@ class Scanner {
     bool match(char c);
     char peek();
     void string();
+    bool isDigit(char c);
+    void number();
+    char peekNext();
+    void identifier();
+    bool isAlpha(char c);
+    bool isAlphaNumeric(char c);
 };

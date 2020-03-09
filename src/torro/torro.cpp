@@ -37,5 +37,5 @@ int Interpreter::run(std::string &fileSource) {
     return 0;
 }
 void Interpreter::error(int line,std::string message) {
-    std::cerr <<" Lins is " <<  line << " " << message << std::endl;
+    std::cerr <<"Line is " << line << " " << message << std::endl;
 }
