@@ -40,10 +40,10 @@ class Unary : public Expr {
 
 class Visitor {
     public:
-    std::string visitBinary(Binary *b) ;
-    std::string visitGrouping(Grouping *b) ;
-    std::string visitLiteral(Literal *b) ;
-    std::string visitUnary(Unary *b) ;
+    virtual std::string visitBinary(Binary *b) = 0 ;
+    virtual std::string visitGrouping(Grouping *b) = 0 ;
+    virtual std::string visitLiteral(Literal *b) = 0 ;
+    virtual std::string visitUnary(Unary *b) = 0 ;
     
 };
 class AstPrinter : Visitor { 
@@ -63,20 +63,28 @@ class AstPrinter : Visitor {
         return ss.str();                             
     }                   
 
-    template <class Expression>
-    std::string handleCase(Expression e) {
+    std::string handleCase(Expr *e) {
         return e->accept(this);
-    }
-    template <>
+    };
     std::string handleCase(std::string s) {
         return s;
-    }
+    };
     public:
     std::string print(Expr *expr) {                                            
         return expr->accept(this);                                          
     }
-    std::string visitBinary(Binary *binary) {
+    std::string visitBinary(Binary *binary) override {
         return parenthesize(binary->Operator->lexeme, binary->left, binary->right);
     }
+    std::string visitGrouping(Grouping *group) override{
+        return parenthesize("group",group->expression);  
+    }
+    std::string visitLiteral(Literal *literal) override {                
+        if (literal->literal == NULL) return "nil";                            
+        return *static_cast<std::string*>(literal->literal);                                    
+    }   
+    std::string visitUnary(Unary *unary) override {                    
+        return parenthesize(unary->Operator->lexeme, unary->expr);           
+  }     
 
 };

@@ -1,7 +1,15 @@
 #include <iostream>
 #include <torro.hpp>
+#include <parser.hpp>
 int main(int argc, char * argv[]) {
     int error = 0;
+    Token *minus=  new Token(TokenType::MINUS, "-", NULL, 1);
+    Expr *left = new Unary(minus,new Literal(new std::string("123")) );
+    Expr *right = new Grouping(new Literal(new std::string("1243")) ) ;
+    Token *token = new Token(TokenType::STAR, "*", NULL, 1);
+    Expr *expression = new Binary(left,token,right);
+    std::cout << (new AstPrinter())->print(expression);
+    return error;
     Interpreter iterpreter;
     if ( argc > 2 ) {
         std::cout << "Usage Torro [script] \n" ;
