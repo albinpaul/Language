@@ -2,6 +2,24 @@
 #include <sstream>
 #include <cstdarg>
 
+class Type {
+    public:
+    virtual std::string to_string() = 0;
+};
+
+template <typename T>
+class TypeWrapper : public Type {
+    T a;
+    public:
+    TypeWrapper(T a):a(a) {};
+    std::string to_string() override{
+        std::stringstream ss;
+        ss << a ;
+        return ss.str();
+    }
+};
+
+
 class Visitor;
 class Expr{
     public:
@@ -59,7 +77,7 @@ class AstPrinter : Visitor {
     template <class T>
     std::string parenthesize(T t) {
         std::stringstream  ss;
-        ss << "(" << handleCase(t) << ")";
+        ss << handleCase(t);
         return ss.str();                             
     }                   
 
@@ -81,10 +99,11 @@ class AstPrinter : Visitor {
     }
     std::string visitLiteral(Literal *literal) override {                
         if (literal->literal == NULL) return "nil";                            
-        return *static_cast<std::string*>(literal->literal);                                    
+        return static_cast<Type*>(literal->literal) ->to_string();                                    
     }   
     std::string visitUnary(Unary *unary) override {                    
         return parenthesize(unary->Operator->lexeme, unary->expr);           
   }     
 
 };
+

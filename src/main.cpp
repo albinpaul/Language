@@ -3,9 +3,11 @@
 #include <parser.hpp>
 int main(int argc, char * argv[]) {
     int error = 0;
+    int a = 123;
+    int b = 435;
     Token *minus=  new Token(TokenType::MINUS, "-", NULL, 1);
-    Expr *left = new Unary(minus,new Literal(new std::string("123")) );
-    Expr *right = new Grouping(new Literal(new std::string("1243")) ) ;
+    Expr *left = new Unary(minus,new Literal(new TypeWrapper<decltype(a)>(a) ));
+    Expr *right = new Grouping(new Literal(new TypeWrapper<decltype(b)>(b))) ;
     Token *token = new Token(TokenType::STAR, "*", NULL, 1);
     Expr *expression = new Binary(left,token,right);
     std::cout << (new AstPrinter())->print(expression);
