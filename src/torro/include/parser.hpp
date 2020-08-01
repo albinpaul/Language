@@ -8,10 +8,10 @@ class Type {
 };
 
 template <typename T>
-class TypeWrapper : public Type {
+class LiteralWrapper : public Type {
     T a;
     public:
-    TypeWrapper(T a):a(a) {};
+    LiteralWrapper(T a):a(a) {};
     std::string to_string() override{
         std::stringstream ss;
         ss << a ;
