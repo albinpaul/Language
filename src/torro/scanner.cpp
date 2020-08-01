@@ -134,3 +134,18 @@ bool  Scanner::isAlpha(char c) {
 bool  Scanner::isAlphaNumeric(char c) {
     return isAlpha(c) || isDigit(c);      
 } 
+
+
+
+std::string Binary::accept(Visitor *visitor) {
+    return visitor->visitBinary(this);
+}
+std::string Grouping::accept(Visitor *visitor) {
+    return visitor->visitGrouping(this);
+}
+std::string Unary::accept(Visitor *visitor) {
+    return visitor->visitUnary(this);
+}
+std::string Literal::accept(Visitor *visitor) {
+    return visitor->visitLiteral(this);
+}
