@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <sstream>
 #include <cstdarg>
-
+#include <memory>
+#include <variant>
 enum TokenType {
     // Single-character tokens.                      
   LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -103,45 +104,62 @@ class LiteralWrapper : public Type {
 class Visitor;
 class Expr{
     public:
-    virtual std::string  accept(Visitor * ) = 0;
+    virtual std::string  accept(Visitor *) = 0;
 };
 class Binary : public Expr {
     public:
-    Binary(Expr *left, Token *Operator, Expr *right): left(left),Operator(Operator),right(right) {};    
-    Expr *left;
-    Token *Operator;
-    Expr *right;
-    std::string accept(Visitor *);
+    Binary(std::shared_ptr<Expr> left, std::shared_ptr<Token> Operator, std::shared_ptr<Expr> right): left(left),Operator(Operator),right(right) {};    
+    std::shared_ptr<Expr> left;
+    std::shared_ptr<Token> Operator;
+    std::shared_ptr<Expr> right;
+    std::string accept(Visitor * );
 };
 class Grouping : public Expr {
     public:
-    Expr *expression;
-    Grouping(Expr *expression):expression(expression){};
-    std::string accept(Visitor *);
+    std::shared_ptr<Expr> expression;
+    Grouping(std::shared_ptr<Expr> expression):expression(expression){};
+    std::string accept(Visitor * );
+};
+
+class LiteralVisitor {
+  public:
+  std::string operator ()(std::string &v) {
+    return v;
+  }
+  std::string operator ()(int &v) {
+    return std::to_string(v);
+  }
+  std::string operator ()(float &v) {
+    return std::to_string(v);;
+  }
+  std::string operator ()(std::monostate &v) {
+    return "void";
+  }
 };
 
 class Literal : public Expr {
     public:
-    void * literal;
-    Literal (void *literal): literal(literal) {};
+    typedef std::variant<std::monostate,int,float,std::string> LiteralType;
+    LiteralType literal;
+    Literal (LiteralType literal): literal(literal) {};
     std::string accept(Visitor *);
 };
 
 class Unary : public Expr {
     public:
-    Token *Operator;
-    Expr *expr;
-    Unary(Token *Operator,Expr *expr): Operator(Operator), expr(expr) {};
-    std::string accept(Visitor * );
+    std::shared_ptr<Token> Operator;
+    std::shared_ptr<Expr> expr;
+    Unary(std::shared_ptr<Token> Operator,std::shared_ptr<Expr> expr): Operator(Operator), expr(expr) {};
+    std::string accept(Visitor *);
 };
 
 
 class Visitor {
     public:
-    virtual std::string visitBinary(Binary *b) = 0 ;
-    virtual std::string visitGrouping(Grouping *b) = 0 ;
-    virtual std::string visitLiteral(Literal *b) = 0 ;
-    virtual std::string visitUnary(Unary *b) = 0 ;
+    virtual std::string visitBinary(std::shared_ptr<Binary> b) = 0 ;
+    virtual std::string visitGrouping(std::shared_ptr<Grouping> b) = 0 ;
+    virtual std::string visitLiteral(std::shared_ptr<Literal> b) = 0 ;
+    virtual std::string visitUnary(std::shared_ptr<Unary> b) = 0 ;
     
 };
 class AstPrinter : Visitor { 
@@ -161,27 +179,28 @@ class AstPrinter : Visitor {
         return ss.str();                             
     }                   
 
-    std::string handleCase(Expr *e) {
+    std::string handleCase(std::shared_ptr<Expr> &e) {
         return e->accept(this);
     };
     std::string handleCase(std::string s) {
         return s;
     };
     public:
-    std::string print(Expr *expr) {                                            
+    std::string print(std::shared_ptr<Expr> &expr) {                                            
         return expr->accept(this);                                          
     }
-    std::string visitBinary(Binary *binary) override {
+    std::string visitBinary(std::shared_ptr<Binary> binary) override {
         return parenthesize(binary->Operator->lexeme, binary->left, binary->right);
     }
-    std::string visitGrouping(Grouping *group) override{
+    std::string visitGrouping(std::shared_ptr<Grouping> group) override{
         return parenthesize("group",group->expression);  
     }
-    std::string visitLiteral(Literal *literal) override {                
-        if (literal->literal == NULL) return "nil";                            
-        return static_cast<Type*>(literal->literal) ->to_string();                                    
+    std::string visitLiteral(std::shared_ptr<Literal> literal) override {                
+      if (!std::holds_alternative<std::monostate>(literal->literal)) 
+        return "nil";
+      return std::visit(LiteralVisitor{},literal->literal);                            
     }   
-    std::string visitUnary(Unary *unary) override {                    
+    std::string visitUnary(std::shared_ptr<Unary> unary) override {                    
         return parenthesize(unary->Operator->lexeme, unary->expr);           
   }     
 

@@ -2,7 +2,7 @@
 #include "torro.hpp"
 #include <iostream>
 Token::Token(TokenType type, std::string lexeme, void * literal, int line) : 
-        type(type),lexeme(lexeme),literal(literal),line(line){
+    type(type),lexeme(lexeme),literal(literal),line(line){
 }
 std::ostream& operator<<(std::ostream& os, const Token& dt) {
     os << dt.type << " " << dt.lexeme << " " << dt.literal ;
@@ -135,17 +135,17 @@ bool  Scanner::isAlphaNumeric(char c) {
     return isAlpha(c) || isDigit(c);      
 } 
 
+  
 
-
-std::string Binary::accept(Visitor *visitor) {
-    return visitor->visitBinary(this);
+std::string Binary::accept(Visitor * visitor) {
+    return visitor->visitBinary(std::shared_ptr<Binary>(this));
 }
-std::string Grouping::accept(Visitor *visitor) {
-    return visitor->visitGrouping(this);
+std::string Grouping::accept(Visitor * visitor) {
+    return visitor->visitGrouping(std::shared_ptr<Grouping>(this));
 }
-std::string Unary::accept(Visitor *visitor) {
-    return visitor->visitUnary(this);
+std::string Unary::accept(Visitor *visitor ) {
+    return visitor->visitUnary(std::shared_ptr<Unary>(this));
 }
 std::string Literal::accept(Visitor *visitor) {
-    return visitor->visitLiteral(this);
+    return visitor->visitLiteral(std::shared_ptr<Literal>(this));
 }
