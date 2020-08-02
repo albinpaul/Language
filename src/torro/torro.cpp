@@ -39,3 +39,11 @@ int Interpreter::run(std::string &fileSource) {
 void Interpreter::error(int line,std::string message) {
     std::cerr <<"Line is " << line << " " << message << std::endl;
 }
+
+void  Interpreter::error(Token token, std::string message) {
+    if (token.type == TokenType::ENDOF) {
+      error(token.line, " at end" + message);
+    } else {
+      error(token.line, " at '" + token.lexeme + "'" +  message);
+    }
+}

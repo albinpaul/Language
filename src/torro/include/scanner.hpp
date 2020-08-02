@@ -1,11 +1,6 @@
-#include <string>
-#include <ostream>
-#include <vector>
-#include <unordered_map>
-#include <sstream>
-#include <cstdarg>
-#include <memory>
-#include <variant>
+#include <commonlibs.hpp>
+#ifndef _SCANNER_HEADER_H
+#define _SCANNER_HEADER_H
 enum TokenType {
     // Single-character tokens.                      
   LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -126,22 +121,25 @@ class LiteralVisitor {
   std::string operator ()(std::string &v) {
     return v;
   }
-  std::string operator ()(int &v) {
-    return std::to_string(v);
-  }
-  std::string operator ()(float &v) {
-    return std::to_string(v);;
-  }
   std::string operator ()(std::monostate &v) {
     return "void";
   }
+  template <typename T>
+  std::string operator ()(T v) {
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+  }
+  
+  
 };
 
 class Literal : public Expr {
     public:
-    typedef std::variant<std::monostate,int,float,std::string> LiteralType;
+    typedef std::variant<std::monostate,bool,int,float,std::string> LiteralType;
     LiteralType literal;
     Literal (LiteralType literal): literal(literal) {};
+    Literal () {};
     std::string accept(Visitor *);
 };
 
@@ -206,3 +204,4 @@ class AstPrinter : Visitor {
 
 };
 
+#endif
