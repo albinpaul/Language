@@ -34,6 +34,9 @@ int Interpreter::run(std::string &fileSource) {
     for(auto &it:tokens) {
         std::cout << it << std::endl;
     }
+    if (Interpreter::getInstance() -> hasError) {
+        exit(65);
+    }
     return 0;
 }
 void Interpreter::error(int line,std::string message) {
