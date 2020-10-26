@@ -21,14 +21,16 @@ enum TokenType {
   ENDOF  
 };
 
+using LexemeVariant = std::variant <std::monostate,int,double, std::string> ;
 class Token {
     public:
     const TokenType type;
     const std::string lexeme;
-    const void * literal;
+    const LexemeVariant literal;
     const int line;
-
-    Token(TokenType type, std::string lexeme, void * literal, int line);
+    Token(TokenType type, std::string lexeme, int line);
+    
+    Token(TokenType type, std::string lexeme, LexemeVariant literal, int line);
     friend std::ostream& operator<<(std::ostream& os, const Token& dt);
 };
 
@@ -64,7 +66,7 @@ class Scanner {
     void scanToken();
     char advance();
     void addToken(TokenType type) ;
-    void addToken(TokenType type, void * literal);
+    void addToken(TokenType type, LexemeVariant variant);
     bool match(char c);
     char peek();
     void string();
@@ -77,23 +79,6 @@ class Scanner {
 };
 
 
-
-class Type {
-    public:
-    virtual std::string to_string() = 0;
-};
-
-template <typename T>
-class LiteralWrapper : public Type {
-    T a;
-    public:
-    LiteralWrapper(T a):a(a) {};
-    std::string to_string() override{
-        std::stringstream ss;
-        ss << a ;
-        return ss.str();
-    }
-};
 
 
 class Visitor;

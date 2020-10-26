@@ -1,11 +1,39 @@
 #include "scanner.hpp"
 #include "torro.hpp"
 #include <iostream>
-Token::Token(TokenType type, std::string lexeme, void * literal, int line) : 
+Token::Token(TokenType type, std::string lexeme, LexemeVariant literal, int line) : 
     type(type),lexeme(lexeme),literal(literal),line(line){
 }
+Token::Token(TokenType type, std::string lexeme, int line) : 
+    type(type),lexeme(lexeme),line(line){
+}
+
+
+// helper constant for the visitor #3
+template<class> inline constexpr bool always_false_v = false;
+
 std::ostream& operator<<(std::ostream& os, const Token& dt) {
-    os << dt.type << " " << dt.lexeme << " " << dt.literal ;
+    os << dt.type << " " << dt.lexeme << " ";
+    std::visit(
+        [&](auto &&arg) -> std::string {
+            using T = std::decay_t<decltype(arg)>;
+            std::string returnValue = "";
+            if constexpr (std::is_same_v<T,int>)
+                os <<  std::to_string(arg);
+            else if constexpr (std::is_same_v<T, long>)
+                os << std::to_string(arg);
+            else if constexpr (std::is_same_v<T, double>)
+                os << std::to_string(arg);
+            else if constexpr (std::is_same_v<T, std::string>)
+                os << arg;
+            else if constexpr (std::is_same_v<T, std::monostate>)
+                os << "Lexeme is empty";
+            else 
+                static_assert(always_false_v<T>, "non-exhaustive visitor!");
+            return returnValue;
+        },
+        dt.literal
+    );
     return os;
 }
 std::vector <Token> Scanner::scanTokens() {
@@ -14,7 +42,7 @@ std::vector <Token> Scanner::scanTokens() {
         start = current;
         scanToken();
     }
-    tokens.push_back(Token(ENDOF, "", NULL, line));
+    tokens.push_back(Token(ENDOF, "", line));
     return tokens;
 }
 bool Scanner::isEnd() {
@@ -72,7 +100,7 @@ void Scanner::number() {
     }                                                         
 
     double value =  atof (source.substr(start, current - start).c_str());
-    addToken(NUMBER,&value);
+    addToken(NUMBER,value);
 }
 
 char Scanner::peekNext() {                         
@@ -90,12 +118,12 @@ bool Scanner::isDigit(char c) {
     return '0' <= c && c <= '9';
 }
 void Scanner::addToken(TokenType type) {                
-    addToken(type, NULL);                                
-  }       
-
-void Scanner::addToken(TokenType type, void * literal) {
     std::string text = source.substr(start, current - start);      
-    tokens.push_back(Token(type, text, literal, line));    
+    tokens.push_back(Token(type, text, line));                                  
+  }       
+void Scanner::addToken(TokenType type, LexemeVariant variant) {
+    std::string text = source.substr(start, current - start);      
+    tokens.push_back(Token(type, text, variant, line));    
 } 
 bool Scanner::match(char expected) {
     if (isEnd())
@@ -116,7 +144,7 @@ void Scanner::string() {
     }                                                       
     advance();                                              
     std::string value = source.substr(start + 1, current - 1 - start - 1);
-    addToken(STRING, &value);                                
+    addToken(STRING, value);                                
 }
 void Scanner::identifier() {                
     while (isAlphaNumeric(peek())) advance();
