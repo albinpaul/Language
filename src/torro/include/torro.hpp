@@ -2,8 +2,9 @@
 #define _INTERPRETOR
 #include <scanner.hpp>
 class Interpreter{
-        bool hasError = false;
+        bool hasError = false;    
     public:
+        static Interpreter * getInstance();
         static int runFile(const char * fileName);
         static int runPrompt();
         static int run(std::string &fileSource);

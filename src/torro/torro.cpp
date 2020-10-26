@@ -46,4 +46,9 @@ void  Interpreter::error(Token token, std::string message) {
     } else {
       error(token.line, " at '" + token.lexeme + "'" +  message);
     }
+    Interpreter::getInstance()->hasError = true;
+}
+Interpreter * Interpreter::getInstance(){
+    static Interpreter * instance = new Interpreter();
+    return instance;
 }
