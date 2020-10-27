@@ -1,6 +1,6 @@
 #ifndef __COMMON_HEADERS_INCLUDED
 #define __COMMON_HEADERS_INCLUDED
-#include <ostream>
+#include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <sstream>
@@ -8,4 +8,5 @@
 #include <memory>
 #include <variant>
 #include <iomanip>
+#include <functional>
 #endif
