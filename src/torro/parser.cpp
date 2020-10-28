@@ -1,19 +1,19 @@
 #include <parser.hpp>
 
 std::string Binary::accept(std::shared_ptr <Visitor> visitor) {
-    std::shared_ptr<Binary> s(this);
+    std::shared_ptr<Binary> s = shared_from_this();
     return visitor->visitBinary(s);
 }
 std::string Grouping::accept(std::shared_ptr <Visitor> visitor) {
-    std::shared_ptr<Grouping> s(this);
+    std::shared_ptr<Grouping> s = shared_from_this();
     return visitor->visitGrouping(s);
 }
 std::string Unary::accept(std::shared_ptr <Visitor> visitor) {
-    std::shared_ptr<Unary> s(this);
+     std::shared_ptr<Unary> s = shared_from_this();
     return visitor->visitUnary(s);
 }
 std::string Literal::accept(std::shared_ptr <Visitor> visitor) {
-    std::shared_ptr<Literal> s(this);
+    std::shared_ptr<Literal> s = shared_from_this();
     return visitor->visitLiteral(s);
 }
 std::string AstPrinter::parenthesize(std::vector<StringAndExp> vec) {

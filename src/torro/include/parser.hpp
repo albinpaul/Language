@@ -7,7 +7,7 @@ class Expr{
     public:
     virtual std::string  accept(std::shared_ptr <Visitor> v) = 0;
 };
-class Binary : public Expr {
+class Binary : public Expr,  public std::enable_shared_from_this<Binary> {
     public:
     Binary(std::shared_ptr<Expr> left, std::shared_ptr<Token> Operator, std::shared_ptr<Expr> right): left(left),Operator(Operator),right(right) {};    
     std::shared_ptr<Expr> left;
@@ -15,14 +15,14 @@ class Binary : public Expr {
     std::shared_ptr<Expr> right;
     std::string accept(std::shared_ptr <Visitor> v );
 };
-class Grouping : public Expr {
+class Grouping : public Expr,  public std::enable_shared_from_this<Grouping> {
     public:
     std::shared_ptr<Expr> expression;
     Grouping(std::shared_ptr<Expr> expression):expression(expression){};
     std::string accept(std::shared_ptr <Visitor> v );
 };
 
-class Literal : public Expr {
+class Literal : public Expr,  public std::enable_shared_from_this<Literal> {
     public:
     typedef std::variant<std::monostate,bool,int,float,std::string> LiteralType;
     LiteralType literal;
@@ -31,7 +31,7 @@ class Literal : public Expr {
     std::string accept(std::shared_ptr <Visitor> v);
 };
 
-class Unary : public Expr {
+class Unary : public Expr,  public std::enable_shared_from_this<Unary> {
     public:
     std::shared_ptr<Token> Operator;
     std::shared_ptr<Expr> expr;
