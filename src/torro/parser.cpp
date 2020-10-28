@@ -27,11 +27,7 @@ std::string AstPrinter::parenthesize(std::vector<StringAndExp> vec) {
             using T = std::decay_t<decltype(arg)>;
             if  constexpr (std::is_same_v<T, std::shared_ptr <Expr>>)
             {    
-                std::cout << "expr" << std::endl;
-            
                 ss += arg->accept(self);
-                
-                std::cout << "afterexpr" << std::endl;
             }
             else if constexpr (std::is_same_v<T, std::string>)
             {   

@@ -70,21 +70,20 @@ class AstPrinter : public Visitor {
     }
     std::string visitLiteral(std::shared_ptr<Literal> &literal) override {                
       std::stringstream ss;
-      std::cout << "visitLIteral" << std::endl;
-    //   std::visit([&](auto &&arg) {
-    //     using T = std::decay_t<decltype(arg)>;
-    //     if constexpr (std::is_same_v<T, int> 
-    //         || std::is_same_v<T, std::string>
-    //         || std::is_same_v<T, float>
-    //         || std::is_same_v<T, bool>
-    //         )
-    //         ss << arg;
-    //     else if constexpr (std::is_same_v<T, std::monostate>)
-    //         ss << "monostate";
-    //     else 
-    //         static_assert(always_false_v<T>, "non-exhaustive visitor!");
+      std::visit([&](auto &&arg) {
+        using T = std::decay_t<decltype(arg)>;
+        if constexpr (std::is_same_v<T, int> 
+            || std::is_same_v<T, std::string>
+            || std::is_same_v<T, float>
+            || std::is_same_v<T, bool>
+            )
+            ss << arg;
+        else if constexpr (std::is_same_v<T, std::monostate>)
+            ss << "monostate";
+        else 
+            static_assert(always_false_v<T>, "non-exhaustive visitor!");
     
-    //   },literal->literal);
+      },literal->literal);
       return ss.str();                            
     }   
     std::string visitUnary(std::shared_ptr<Unary> &unary) override {                    
