@@ -14,7 +14,7 @@ spExpr Parser::equality()
     {
         Token operator_ = previous();
         spExpr right = comparison();
-        expr = std::make_shared<Binary>(expr, operator_, right);
+        expr = std::make_shared<Binary>(expr, std::make_shared<Token>(operator_), right);
     }
     return expr;
 }
@@ -70,7 +70,7 @@ spExpr Parser::comparison()
     while(match({GREATER, GREATER_EQUAL, LESS, LESS_EQUAL})) {
         Token operator_ = previous();
         spExpr right = term();
-        expr =  std::make_shared<Binary>(expr, operator_, right);
+        expr =  std::make_shared<Binary>(expr, std::make_shared<Token>(operator_), right);
     }
     return expr;
 }
@@ -83,7 +83,7 @@ spExpr Parser::term()
     while(match({MINUS, PLUS})) {
         Token operator_ = previous();
         spExpr right = factor();
-        expr =  std::make_shared<Binary>(expr, operator_, right);    
+        expr =  std::make_shared<Binary>(expr, std::make_shared<Token>(operator_), right);    
     }
     return expr;
 }
@@ -95,7 +95,7 @@ spExpr Parser::factor()
     while(match({SLASH, STAR})) {
         Token operator_ = previous();
         spExpr right = unary();
-        expr =  std::make_shared<Binary>(expr, operator_, right);    
+        expr =  std::make_shared<Binary>(expr, std::make_shared<Token>(operator_), right);    
     }
     return expr;
 }
@@ -105,7 +105,7 @@ spExpr Parser::unary()
     if (match({BANG, MINUS})) {
         Token operator_ = previous();
         spExpr right = unary();
-        return std::make_shared<Unary>(operator_, right);
+        return std::make_shared<Unary>(std::make_shared<Token>(operator_), right);
     }
     return primary();
 }
@@ -123,6 +123,7 @@ spExpr Parser::primary()
         consume(RIGHT_PAREN, "Expect ')' after Expression.");
         return std::make_shared<Grouping>(expr);
     }
+    throw error(peek(), "Expected expression,");
 }
 
 
@@ -135,7 +136,7 @@ Token Parser::consume(TokenType t, std::string message)
 Parser::ParseError Parser::error(Token t, std::string message) 
 {
     Interpreter::error(t, message);
-
+    return ParseError(message);
 }
 
 
@@ -145,12 +146,8 @@ const char* Parser::ParseError::what() const noexcept
 
 }
 
-Parser::ParseError::ParseError(const char* message) :msg_(message)
-{
 
-}
-
-Parser::ParseError::ParseError(const std::string& message): msg_(message)
+Parser::ParseError::ParseError(const std::string& message): msg_(message), std::runtime_error(message)
 {
 
 }
@@ -160,4 +157,38 @@ Parser::ParseError::ParseError(const std::string& message): msg_(message)
 Parser::ParseError::~ParseError() noexcept
 {
 
+}
+
+
+void Parser::synchronize() 
+{
+    advance();
+
+    while (!isAtEnd()) {
+      if (previous().type == SEMICOLON) return;
+
+      switch (peek().type) {
+        case CLASS:
+        case FUN:
+        case VAR:
+        case FOR:
+        case IF:
+        case WHILE:
+        case PRINT:
+        case RETURN:
+          return;
+      }
+
+      advance();
+    }
+}
+
+
+spExpr Parser::parse() 
+{
+    try{
+        return expression();
+    } catch(ParseError e) {
+        return nullptr;
+    }
 }

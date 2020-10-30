@@ -26,9 +26,8 @@ class Grouping : public Expr,  public std::enable_shared_from_this<Grouping> {
 
 class Literal : public Expr,  public std::enable_shared_from_this<Literal> {
     public:
-    typedef std::variant<std::monostate,bool,int,float,std::string> LiteralType;
-    LiteralType literal;
-    Literal (LiteralType literal): literal(literal) {};
+    LexemeVariant literal;
+    Literal (LexemeVariant literal): literal(literal) {};
     Literal () {};
     std::string accept(std::shared_ptr <Visitor> v);
 };
@@ -76,7 +75,7 @@ class AstPrinter : public Visitor {
         using T = std::decay_t<decltype(arg)>;
         if constexpr (std::is_same_v<T, int> 
             || std::is_same_v<T, std::string>
-            || std::is_same_v<T, float>
+            || std::is_same_v<T, double>
             || std::is_same_v<T, bool>
             )
             ss << arg;

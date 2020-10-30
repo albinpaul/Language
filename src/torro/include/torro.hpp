@@ -1,6 +1,7 @@
 #ifndef _INTERPRETOR
 #define _INTERPRETOR
 #include <scanner.hpp>
+#include <parser.hpp>
 class Interpreter{
         bool hasError = false;    
     public:

@@ -18,13 +18,12 @@ std::ostream& operator<<(std::ostream& os, const Token& dt) {
         [&](auto &&arg) -> std::string {
             using T = std::decay_t<decltype(arg)>;
             std::string returnValue = "";
-            if constexpr (std::is_same_v<T,int>)
+            if constexpr (std::is_same_v<T,int> 
+                || std::is_same_v<T, bool>
+                || std::is_same_v<T, double>
+            )
                 os <<  std::to_string(arg);
-            else if constexpr (std::is_same_v<T, long>)
-                os << std::to_string(arg);
-            else if constexpr (std::is_same_v<T, double>)
-                os << std::to_string(arg);
-            else if constexpr (std::is_same_v<T, std::string>)
+           else if constexpr (std::is_same_v<T, std::string>)
                 os << arg;
             else if constexpr (std::is_same_v<T, std::monostate>)
                 os << "Lexeme is empty";

@@ -21,7 +21,7 @@ enum TokenType {
   ENDOF  
 };
 
-using LexemeVariant = std::variant <std::monostate,int,double, std::string> ;
+using LexemeVariant = std::variant <std::monostate,bool,int,double, std::string> ;
 class Token {
     public:
     const TokenType type;
@@ -34,6 +34,7 @@ class Token {
     friend std::ostream& operator<<(std::ostream& os, const Token& dt);
 };
 
+using spToken = std::shared_ptr<Token>;
 
 class Scanner {
     const std::string source;

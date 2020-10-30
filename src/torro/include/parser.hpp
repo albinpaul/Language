@@ -1,3 +1,4 @@
+
 #include <commonlibs.hpp>
 #include <scanner.hpp>
 #include <expressions.hpp>
@@ -23,9 +24,9 @@ class Parser
     spExpr unary();
     spExpr primary();
     Token consume(TokenType t, std::string message);
-    class ParseError: public std::runtime_error {
+    void synchronize();
+       class ParseError: public std::runtime_error {
         public:
-            explicit ParseError(const char* message);
             explicit ParseError(const std::string& message);
             virtual ~ParseError() noexcept;
             virtual const char* what() const noexcept;
@@ -34,6 +35,8 @@ class Parser
         };
     ParseError error(Token t, std::string message);
     public:
+    spExpr parse();
+
     Parser(std::vector <Token> tokens);
 
 };
