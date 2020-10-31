@@ -1,1 +1,1 @@
-![Build And Test](https://github.com/albinpaul/Language/workflows/Build%20And%20Test/badge.svg)
+![Build And Test](https://github.com/albinpaul/Language/workflows/Build%20And%20Test/badge.svg)(https://github.com/albinpaul/Language/actions)
