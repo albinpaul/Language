@@ -1,1 +1,1 @@
-Its a work in progress
+![Build And Test](https://github.com/albinpaul/Language/workflows/Build%20And%20Test/badge.svg)
