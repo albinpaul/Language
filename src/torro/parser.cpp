@@ -123,7 +123,7 @@ spExpr Parser::primary()
         consume(RIGHT_PAREN, "Expect ')' after Expression.");
         return std::make_shared<Grouping>(expr);
     }
-    throw error(peek(), "Expected expression,");
+    throw error(peek(), "\nExpected expression,");
 }
 
 
@@ -135,7 +135,7 @@ Token Parser::consume(TokenType t, std::string message)
 
 Parser::ParseError Parser::error(Token t, std::string message) 
 {
-    Interpreter::error(t, message);
+    Torro::error(t, message);
     return ParseError(message);
 }
 

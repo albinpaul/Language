@@ -4,7 +4,7 @@
 int main(int argc, char * argv[]) {
     int error = 0;
     
-    Interpreter* instance = Interpreter::getInstance();
+    Torro* instance = Torro::getInstance();
     if ( argc > 2 ) {
         std::cout << "Usage Torro [script] \n" ;
         error = 1;
