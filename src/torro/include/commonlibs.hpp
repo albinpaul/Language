@@ -9,4 +9,5 @@
 #include <variant>
 #include <iomanip>
 #include <functional>
+#include <stdexcept>
 #endif

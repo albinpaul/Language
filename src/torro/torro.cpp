@@ -31,12 +31,13 @@ int Interpreter::runFile(const char * fileName) {
 int Interpreter::run(std::string &fileSource) {
     Scanner scan(fileSource);
     std::vector <Token> tokens = scan.scanTokens();
-    for(auto &it:tokens) {
-        std::cout << it << std::endl;
-    }
+    Parser parser(tokens);
+    spExpr expression =  parser.parse();
+   
     if (Interpreter::getInstance() -> hasError) {
         exit(65);
     }
+    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
     return 0;
 }
 void Interpreter::error(int line,std::string message) {
