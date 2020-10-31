@@ -64,10 +64,12 @@ class AstPrinter : public Visitor {
         return expr->accept(shared_from_this());                                          
     }
     std::string visitBinary(std::shared_ptr<Binary> &binary) override {
-        return parenthesize({binary->Operator->lexeme, binary->left, binary->right});
+        return parenthesize({ "( ", binary->Operator->lexeme, " ",
+                binary->left, " ", binary->right, " )"
+            });
     }
     std::string visitGrouping(std::shared_ptr<Grouping> &group) override{
-        return parenthesize({"group",group->expression});  
+        return parenthesize({"group( ",group->expression, " )"});  
     }
     std::string visitLiteral(std::shared_ptr<Literal> &literal) override {                
       std::stringstream ss;
@@ -88,7 +90,7 @@ class AstPrinter : public Visitor {
       return ss.str();                            
     }   
     std::string visitUnary(std::shared_ptr<Unary> &unary) override {                    
-        return parenthesize({unary->Operator->lexeme, unary->expr});           
+        return parenthesize({unary->Operator->lexeme, " ", unary->expr});           
   }     
 
 };

@@ -33,13 +33,11 @@ int Interpreter::run(std::string &fileSource) {
     std::vector <Token> tokens = scan.scanTokens();
     Parser parser(tokens);
     spExpr expression =  parser.parse();
-    for(auto &it:tokens) {
-        std::cout << it << std::endl;
-    }
+   
     if (Interpreter::getInstance() -> hasError) {
         exit(65);
     }
-    std::make_shared<AstPrinter> ()->print(expression);
+    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
     return 0;
 }
 void Interpreter::error(int line,std::string message) {

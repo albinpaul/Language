@@ -36,7 +36,6 @@ std::ostream& operator<<(std::ostream& os, const Token& dt) {
     return os;
 }
 std::vector <Token> Scanner::scanTokens() {
-    std::cerr << source << std::endl;
     while(!isEnd()) {
         start = current;
         scanToken();
@@ -49,7 +48,6 @@ bool Scanner::isEnd() {
 }
 void Scanner::scanToken() {
     char c = advance();
-    std::cerr << "c is "<< (int)c <<std::endl;
     switch (c)
     {
         case '(': addToken(LEFT_PAREN); break;
