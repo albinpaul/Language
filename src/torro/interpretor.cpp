@@ -218,3 +218,22 @@ RunTimeError::RunTimeError(spToken token, const char * message)
 {
 
 }
+
+void Interpretor::interpret(spExpr expr) 
+{
+    try {
+        LexemeVariant value = evaluate(expr);
+        std::visit([](auto &&arg) {
+            using T =  std::decay_t<decltype(arg)>;
+            if constexpr (std::is_same_v<std::monostate,T>) {
+                std::cout << "nil" << std::endl;
+            } else {
+                std::stringstream s;
+                s << arg;
+                std::cout << s.str() << std::endl;
+            }
+        }, value);
+    } catch(RunTimeError &error) {
+        Torro::runTimeError(error);
+    }
+}

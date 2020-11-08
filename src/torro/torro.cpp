@@ -37,6 +37,10 @@ int Torro::run(std::string &fileSource) {
     if (Torro::getInstance() -> hasError) {
         exit(65);
     }
+    Torro::getInstance()->interpretor->interpret(expression);
+    if (Torro::getInstance() -> hasRunTimeError) {
+        exit(70);
+    }
     std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
     return 0;
 }
@@ -55,4 +59,12 @@ void  Torro::error(Token token, std::string message) {
 Torro * Torro::getInstance(){
     static Torro * instance = new Torro();
     return instance;
+}
+
+
+
+void Torro::runTimeError(RunTimeError error) 
+{
+    std::cerr << error.what() << std::endl;
+    Torro::getInstance()->hasRunTimeError = true;
 }

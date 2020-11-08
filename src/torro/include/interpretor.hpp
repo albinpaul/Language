@@ -1,9 +1,11 @@
-#ifndef __INTERPRETOR_H__
-#define __INTERPRETOR_H__
 
 #include <commonlibs.hpp>
 #include <scanner.hpp>
 #include <expressions.hpp>
+#include <torro.hpp>
+#ifndef __INTERPRETOR_H__
+#define __INTERPRETOR_H__
+
 class RunTimeError: public std::runtime_error {
     public:
         explicit RunTimeError(spToken token, std::string &message);
@@ -24,5 +26,7 @@ class Interpretor: public Visitor<LexemeVariant> {
     bool isEqual(LexemeVariant &a, LexemeVariant &b);
     LexemeVariant evaluate(std::shared_ptr<Expr> &e);
     void checkNumberOperands(spToken operand, LexemeVariant &left, LexemeVariant &right);
+    public:
+    void interpret(spExpr expr);
 };
 #endif // __INTERPRETOR_H__
