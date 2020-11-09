@@ -42,6 +42,7 @@ class Literal : public Expr,  public std::enable_shared_from_this<Literal> {
     Literal (LexemeVariant literal): literal(literal) {};
     Literal () {};
     std::string accept(std::shared_ptr <Visitor<std::string>> v) override;
+    LexemeVariant accept(std::shared_ptr <Visitor<LexemeVariant>> v) override;
 };
 
 

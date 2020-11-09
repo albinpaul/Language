@@ -7,8 +7,7 @@ LexemeVariant Interpretor::visitLiteral(std::shared_ptr<Literal> &literal)
 
 LexemeVariant Interpretor::visitGrouping(std::shared_ptr<Grouping> &grouping) 
 {
-    return grouping->accept(shared_from_this()
-    );
+    return grouping->accept(shared_from_this());
 }
 LexemeVariant Interpretor::evaluate(std::shared_ptr<Expr> &e) {
     return e->accept(shared_from_this());
@@ -64,7 +63,7 @@ LexemeVariant Interpretor::visitBinary(std::shared_ptr<Binary> &binary)
                     && (std::is_same_v<T2, int>
                     || std::is_same_v<T2, double>)
                     ) {
-                    return LexemeVariant((double)arg1 - (double)arg2);
+                    return LexemeVariant((double)arg1 + (double)arg2);
                 }
                 if constexpr (std::is_same_v<T1, std::string> && std::is_same_v<T2, std::string>) {
                     return LexemeVariant(static_cast<std::string> (arg1) + static_cast<std::string>(arg2));
@@ -233,7 +232,7 @@ void Interpretor::interpret(spExpr expr)
                 std::cout << s.str() << std::endl;
             }
         }, value);
-    } catch(RunTimeError &error) {
-        Torro::runTimeError(error);
+    } catch(RunTimeError *error) {
+        Torro::runTimeError(*error);
     }
 }

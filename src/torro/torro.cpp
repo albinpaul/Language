@@ -33,7 +33,7 @@ int Torro::run(std::string &fileSource) {
     std::vector <Token> tokens = scan.scanTokens();
     Parser parser(tokens);
     spExpr expression =  parser.parse();
-   
+    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
     if (Torro::getInstance() -> hasError) {
         exit(65);
     }
@@ -41,7 +41,7 @@ int Torro::run(std::string &fileSource) {
     if (Torro::getInstance() -> hasRunTimeError) {
         exit(70);
     }
-    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
+   
     return 0;
 }
 void Torro::error(int line,std::string message) {

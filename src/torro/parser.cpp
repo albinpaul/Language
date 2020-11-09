@@ -95,6 +95,7 @@ spExpr Parser::factor()
     while(match({SLASH, STAR})) {
         Token operator_ = previous();
         spExpr right = unary();
+        
         expr =  std::make_shared<Binary>(expr, std::make_shared<Token>(operator_), right);    
     }
     return expr;

@@ -33,6 +33,10 @@ LexemeVariant Unary::accept(std::shared_ptr <Visitor<LexemeVariant>> visitor) {
     return visitor->visitUnary(s);
 }
 
+LexemeVariant Literal::accept(std::shared_ptr <Visitor<LexemeVariant>> visitor) {
+    std::shared_ptr<Literal> s = shared_from_this();
+    return visitor->visitLiteral(s);
+}
 
 
 std::string AstPrinter::parenthesize(std::vector<StringAndExp> vec) {
