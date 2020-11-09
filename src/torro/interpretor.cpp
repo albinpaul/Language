@@ -7,7 +7,7 @@ LexemeVariant Interpretor::visitLiteral(std::shared_ptr<Literal> &literal)
 
 LexemeVariant Interpretor::visitGrouping(std::shared_ptr<Grouping> &grouping) 
 {
-    return grouping->accept(shared_from_this());
+    return evaluate(grouping->expression);
 }
 LexemeVariant Interpretor::evaluate(std::shared_ptr<Expr> &e) {
     return e->accept(shared_from_this());
