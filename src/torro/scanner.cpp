@@ -84,7 +84,7 @@ void Scanner::scanToken() {
             } else if (isAlpha(c)) {                   
                 identifier();                            
             } else {
-                Interpreter::error(line,"unexpected character");
+                Torro::error(line,"unexpected character");
             }
             break;
     }
@@ -136,7 +136,7 @@ void Scanner::string() {
       advance();                                            
     }
     if (isEnd()) {                                        
-      Interpreter::error(line, "Unterminated string.");              
+      Torro::error(line, "Unterminated string.");              
       return;                                               
     }                                                       
     advance();                                              

@@ -2,7 +2,7 @@
 #include <scanner.hpp>
 #include <iostream>
 #include <fstream>
-int Interpreter::runPrompt() {
+int Torro::runPrompt() {
     std::cout << "Running Torro Interpretor" << std::endl;
     int error = 0;
     for(std::string line;;) {
@@ -13,7 +13,7 @@ int Interpreter::runPrompt() {
     return error;
 
 }
-int Interpreter::runFile(const char * fileName) {
+int Torro::runFile(const char * fileName) {
     std::ifstream inputStream(fileName);
     int error = 0;
     std::string fileSource;
@@ -28,31 +28,43 @@ int Interpreter::runFile(const char * fileName) {
     }
     return error;
 }
-int Interpreter::run(std::string &fileSource) {
+int Torro::run(std::string &fileSource) {
     Scanner scan(fileSource);
     std::vector <Token> tokens = scan.scanTokens();
     Parser parser(tokens);
     spExpr expression =  parser.parse();
-   
-    if (Interpreter::getInstance() -> hasError) {
+    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
+    if (Torro::getInstance() -> hasError) {
         exit(65);
     }
-    std::cout << std::make_shared<AstPrinter> ()->print(expression) << std::endl;
+    Torro::getInstance()->interpretor->interpret(expression);
+    if (Torro::getInstance() -> hasRunTimeError) {
+        exit(70);
+    }
+   
     return 0;
 }
-void Interpreter::error(int line,std::string message) {
+void Torro::error(int line,std::string message) {
     std::cerr <<"Line is " << line << " " << message << std::endl;
 }
 
-void  Interpreter::error(Token token, std::string message) {
+void  Torro::error(Token token, std::string message) {
     if (token.type == TokenType::ENDOF) {
       error(token.line, " at end" + message);
     } else {
       error(token.line, " at '" + token.lexeme + "'" +  message);
     }
-    Interpreter::getInstance()->hasError = true;
+    Torro::getInstance()->hasError = true;
 }
-Interpreter * Interpreter::getInstance(){
-    static Interpreter * instance = new Interpreter();
+Torro * Torro::getInstance(){
+    static Torro * instance = new Torro();
     return instance;
+}
+
+
+
+void Torro::runTimeError(RunTimeError error) 
+{
+    std::cerr << error.what() << std::endl;
+    Torro::getInstance()->hasRunTimeError = true;
 }

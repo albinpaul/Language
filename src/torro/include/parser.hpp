@@ -25,14 +25,14 @@ class Parser
     spExpr primary();
     Token consume(TokenType t, std::string message);
     void synchronize();
-       class ParseError: public std::runtime_error {
-        public:
-            explicit ParseError(const std::string& message);
-            virtual ~ParseError() noexcept;
-            virtual const char* what() const noexcept;
-        protected:
-            std::string msg_;
-        };
+    class ParseError: public std::runtime_error {
+    public:
+        explicit ParseError(const std::string& message);
+        virtual ~ParseError() noexcept;
+        virtual const char* what() const noexcept;
+    protected:
+        std::string msg_;
+    };
     ParseError error(Token t, std::string message);
     public:
     spExpr parse();
